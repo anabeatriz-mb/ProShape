@@ -91,9 +91,10 @@ def cadastro():
             return jsonify({"erro": "CPF já cadastrado."}), 400
 
     novo_aluno = {
-        "id": len(alunos) + 1,
         "nome": nome,
-        "cpf": cpf
+        "id": len(alunos) + 1,
+        "cpf": cpf,
+        "status": "ativo"
     }
 
     alunos.append(novo_aluno)
