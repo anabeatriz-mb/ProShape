@@ -1,0 +1,172 @@
+openapi: 3.0.0
+info:
+  title: API Academia
+  description: API para gerenciamento de alunos de academia
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:5000
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Aluno:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        nome:
+          type: string
+          example: João Silva
+        cpf:
+          type: string
+          example: "12345678900"
+
+    LoginRequest:
+      type: object
+      properties:
+        usuario:
+          type: string
+          example: senai
+        senha:
+          type: string
+          example: senai2026
+
+    CadastroRequest:
+      type: object
+      properties:
+        nome:
+          type: string
+          example: Maria
+        cpf:
+          type: string
+          example: "98765432100"
+
+paths:
+
+  /:
+    get:
+      summary: Rota inicial
+      responses:
+        200:
+          description: Informações da API
+
+  /login:
+    post:
+      summary: Login do administrador
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        200:
+          description: Login realizado com sucesso
+        400:
+          description: Dados inválidos
+
+  /cadastro:
+    post:
+      summary: Cadastrar novo aluno
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CadastroRequest'
+      responses:
+        201:
+          description: Aluno cadastrado com sucesso
+        400:
+          description: Erro na requisição
+        401:
+          description: Token inválido ou ausente
+
+  /alunos:
+    get:
+      summary: Listar todos os alunos
+      responses:
+        200:
+          description: Lista de alunos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Aluno'
+
+  /alunos/{id}:
+    get:
+      summary: Buscar aluno por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Aluno encontrado
+        404:
+          description: Aluno não encontrado
+
+    put:
+      summary: Editar aluno
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CadastroRequest'
+      responses:
+        200:
+          description: Aluno atualizado
+        404:
+          description: Aluno não encontrado
+
+    delete:
+      summary: Excluir aluno
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Aluno excluído
+        404:
+          description: Aluno não encontrado
+
+  /alunos/cpf/{cpf}:
+    get:
+      summary: Buscar aluno por CPF
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Aluno encontrado
+        404:
+          description: Aluno não encontrado
