@@ -40,7 +40,7 @@ firebase_admin.initialize_app(cred)
 #conectar ao firestore
 db = firestore.client()
 
-alunos = []
+alunos = db.collection("alunos")
 
 
 #rota boas vindas
@@ -127,7 +127,7 @@ def consultar_por_cpf(cpf):
 
     return jsonify({"erro": "Aluno não encontrado."}), 404
 
-#rota para edição de aluno - PATCH alteração parcial
+#rota para edição de aluno - 
 @app.route("/alunos/<int:id>", methods=['PUT'])
 @token_obrigatorio
 def editar_aluno(id):
