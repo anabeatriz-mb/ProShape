@@ -84,8 +84,10 @@ def cadastro():
         return jsonify({"Erro": "Envie os dados para o cadastro."}), 400
 
     nome = dados.get("nome")
+    id = dados.get("id") 
     cpf = dados.get("cpf")
     status = dados.get("status", "ativo") 
+    
 
     if not nome or not cpf:
         return jsonify({"Erro": "Nome e CPF são obrigatórios."}), 400
