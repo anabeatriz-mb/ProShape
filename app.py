@@ -154,7 +154,7 @@ def consultar_por_cpf(cpf):
 
 
 # EDITAR
-@app.route("/alunos/<string:id>", methods=['PUT'])
+@app.route("/alunos/<int:id>", methods=['PATCH'])
 @token_obrigatorio
 def editar_aluno(id):
     dados = request.get_json()
@@ -162,17 +162,20 @@ def editar_aluno(id):
     if not dados:
         return jsonify({"erro": "Envie os dados para a edição."}), 400
 
-    doc_ref = db.collection("alunos").document(id)
-    doc = doc_ref.get()
+    query = db.collection("alunos").where("id", "==", id).stream()
 
-    if not doc.exists:
-        return jsonify({"erro": "Aluno não encontrado."}), 404
+    for doc in query:
+        doc.reference.update(dados)
 
-    doc_ref.update(dados)
+        aluno_atualizado = doc.reference.get().to_dict()
+        aluno_atualizado["id"] = id
 
-    return jsonify({
-        "mensagem": "Dados editados com sucesso!"
-    }), 200
+        return jsonify({
+            "mensagem": "Dados editados com sucesso!",
+            "aluno": aluno_atualizado
+        }), 200
+
+    return jsonify({"erro": "Aluno não encontrado."}), 404
 
 
 # EXCLUIR
