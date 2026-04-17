@@ -81,6 +81,7 @@ def cadastro():
 
     nome = dados.get("nome")
     cpf = dados.get("cpf")
+    status = dados.get("status", "ativo") 
 
     if not nome or not cpf:
         return jsonify({"Erro": "Nome e CPF são obrigatórios."}), 400
@@ -95,7 +96,7 @@ def cadastro():
     novo_aluno = {
         "nome": nome,
         "cpf": cpf,
-        "status": "ativo"
+        "status": status 
     }
 
     db.collection("alunos").add(novo_aluno)
