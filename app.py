@@ -166,7 +166,7 @@ def editar_aluno(id):
 
     for doc in query:
         doc.reference.update(dados)
-
+        
         aluno_atualizado = doc.reference.get().to_dict()
         aluno_atualizado["id"] = id
 
