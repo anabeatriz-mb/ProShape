@@ -176,10 +176,10 @@ def editar_aluno(id):
 
 
 # EXCLUIR
-@app.route("/alunos/<string:id>", methods=['DELETE'])
+@app.route("/alunos/<string:cpf>", methods=['DELETE'])
 @token_obrigatorio
-def excluir_aluno(id):
-    doc_ref = db.collection("alunos").document(id)
+def excluir_aluno(cpf):
+    doc_ref = db.collection("alunos").document(cpf)
     doc = doc_ref.get()
 
     if not doc.exists:
