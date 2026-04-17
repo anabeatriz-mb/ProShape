@@ -176,20 +176,16 @@ def editar_aluno(id):
 
 
 # EXCLUIR
-@app.route("/alunos/<string:id>", methods=['DELETE'])
+@app.route("/alunos/<int:id>", methods=['DELETE'])
 @token_obrigatorio
 def excluir_aluno(id):
-    doc_ref = db.collection("alunos").document(id)
-    doc = doc_ref.get()
+    query = db.collection("alunos").where("id", "==", id).stream()
 
-    if not doc.exists:
-        return jsonify({"erro": "Aluno não encontrado."}), 404
+    for doc in query:
+        doc.reference.delete()
+        return jsonify({"mensagem": "Aluno excluído com sucesso!"}), 200
 
-    doc_ref.delete()
-
-    return jsonify({
-        "mensagem": "Aluno excluído com sucesso!"
-    }), 200
+    return jsonify({"erro": "Aluno não encontrado."}), 404
 
 
 # ------------------ ERROS ------------------ #
