@@ -84,31 +84,33 @@ def cadastro():
         return jsonify({"Erro": "Envie os dados para o cadastro."}), 400
 
     nome = dados.get("nome")
-    id = dados.get("id") 
     cpf = dados.get("cpf")
-    status = dados.get("status", "ativo") 
-    
+    status = dados.get("status", "ativo")
 
     if not nome or not cpf:
         return jsonify({"Erro": "Nome e CPF são obrigatórios."}), 400
 
-    # verificar CPF duplicado
-    alunos_ref = db.collection("alunos").stream()
-    for doc in alunos_ref:
-        aluno = doc.to_dict()
-        if aluno.get("cpf") == cpf:
-            return jsonify({"erro": "CPF já cadastrado."}), 400
+    # gerar ID depois da validação
+    contador_ref = db.collection("contador").document("controle_id")
+    contador_doc = contador_ref.get()
+
+    ultimo_id = contador_doc.to_dict().get("ultimo_id", 0)
+    novo_id = ultimo_id + 1
+
+    contador_ref.update({"ultimo_id": novo_id})
 
     novo_aluno = {
+        "id": novo_id,
         "nome": nome,
         "cpf": cpf,
-        "status": status 
+        "status": status
     }
 
     db.collection("alunos").add(novo_aluno)
 
     return jsonify({
-        "mensagem": "Aluno cadastrado com sucesso!"
+        "mensagem": "Aluno cadastrado com sucesso!",
+        "aluno": novo_aluno
     }), 201
 
 
