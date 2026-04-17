@@ -154,15 +154,15 @@ def consultar_por_cpf(cpf):
 
 
 # EDITAR
-@app.route("/alunos/<string:cpf>", methods=['PUT'])
+@app.route("/alunos/<string:id>", methods=['PUT'])
 @token_obrigatorio
-def editar_aluno(cpf):
+def editar_aluno(id):
     dados = request.get_json()
 
     if not dados:
         return jsonify({"erro": "Envie os dados para a edição."}), 400
 
-    doc_ref = db.collection("alunos").document(cpf)
+    doc_ref = db.collection("alunos").document(id)
     doc = doc_ref.get()
 
     if not doc.exists:
@@ -176,10 +176,10 @@ def editar_aluno(cpf):
 
 
 # EXCLUIR
-@app.route("/alunos/<string:cpf>", methods=['DELETE'])
+@app.route("/alunos/<string:id>", methods=['DELETE'])
 @token_obrigatorio
-def excluir_aluno(cpf):
-    doc_ref = db.collection("alunos").document(cpf)
+def excluir_aluno(id):
+    doc_ref = db.collection("alunos").document(id)
     doc = doc_ref.get()
 
     if not doc.exists:
